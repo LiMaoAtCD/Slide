@@ -14,6 +14,8 @@
 		DAC93C041CEC469000A55677 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DAC93C021CEC469000A55677 /* LaunchScreen.storyboard */; };
 		DAC93C0F1CEC469000A55677 /* SlideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC93C0E1CEC469000A55677 /* SlideTests.swift */; };
 		DAC93C1A1CEC469000A55677 /* SlideUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC93C191CEC469000A55677 /* SlideUITests.swift */; };
+		DAC93C281CEC48E700A55677 /* LeftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC93C271CEC48E700A55677 /* LeftViewController.swift */; };
+		DAC93C2A1CEC48EF00A55677 /* CenterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAC93C291CEC48EF00A55677 /* CenterViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		DAC93C151CEC469000A55677 /* SlideUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SlideUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAC93C191CEC469000A55677 /* SlideUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideUITests.swift; sourceTree = "<group>"; };
 		DAC93C1B1CEC469000A55677 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DAC93C271CEC48E700A55677 /* LeftViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftViewController.swift; sourceTree = "<group>"; };
+		DAC93C291CEC48EF00A55677 /* CenterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CenterViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +104,8 @@
 				DAC93BF91CEC469000A55677 /* AppDelegate.swift */,
 				DAC93BFB1CEC469000A55677 /* ViewController.swift */,
 				DAC93BFD1CEC469000A55677 /* Main.storyboard */,
+				DAC93C271CEC48E700A55677 /* LeftViewController.swift */,
+				DAC93C291CEC48EF00A55677 /* CenterViewController.swift */,
 				DAC93C001CEC469000A55677 /* Assets.xcassets */,
 				DAC93C021CEC469000A55677 /* LaunchScreen.storyboard */,
 				DAC93C051CEC469000A55677 /* Info.plist */,
@@ -256,6 +262,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DAC93C281CEC48E700A55677 /* LeftViewController.swift in Sources */,
+				DAC93C2A1CEC48EF00A55677 /* CenterViewController.swift in Sources */,
 				DAC93BFC1CEC469000A55677 /* ViewController.swift in Sources */,
 				DAC93BFA1CEC469000A55677 /* AppDelegate.swift in Sources */,
 			);

@@ -13,9 +13,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    var mainContainer: UIViewController!
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        let sb = UIStoryboard.init(name: "Main", bundle: nil)
+        mainContainer = sb.instantiateViewControllerWithIdentifier("ViewController") as! ViewController
+        
+        self.window!.rootViewController = mainContainer
+        self.window?.makeKeyAndVisible()
         return true
     }
 
