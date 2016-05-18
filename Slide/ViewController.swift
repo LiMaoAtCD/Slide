@@ -45,19 +45,41 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
     
     func pan(gesture: UIPanGestureRecognizer) {
         let offsetX = gesture.translationInView(self.view).x
-        if gesture.state == .Ended {
-            currentDistance = currentDistance + offsetX
-        }
-        
-        if currentDistance + offsetX > Common.screenWidth * rate {
+        if currentDistance + offsetX >= Common.screenWidth * rate {
             centerViewController.view.frame = CGRectMake(Common.screenWidth * rate, 0, Common.screenWidth, Common.screenHeight)
-        } else if currentDistance + offsetX < 0 {
+        } else if currentDistance + offsetX <= 0 {
             centerViewController.view.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
         } else {
             centerViewController.view.frame = CGRectMake(currentDistance + offsetX, 0,Common.screenWidth, Common.screenHeight)
         }
+
+        if gesture.state == .Ended {
+            
+            animateToRight(centerViewController.view.frame.origin.x >= (Common.screenWidth * rate) / 2 ? true : false)
+
+        }
+        
     }
 
+    func animateToRight(sure: Bool) {
+        
+        if sure {
+            UIView.animateWithDuration(0.2, animations: {
+                self.centerViewController.view.frame = CGRectMake(Common.screenWidth * self.rate, 0, Common.screenWidth, Common.screenHeight)
+            }) { (finished) in
+                self.currentDistance = self.centerViewController.view.frame.origin.x
+            }
+        } else {
+            UIView.animateWithDuration(0.2, animations: {
+                self.centerViewController.view.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+            }) { (finished) in
+                self.currentDistance = self.centerViewController.view.frame.origin.x
+            }
+        }
+
+      
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
