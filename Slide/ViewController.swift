@@ -52,34 +52,52 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
         self.view.backgroundColor = UIColor.whiteColor()
     }
     
+    
+    var gestrueFinished: Bool = true
     func pan(gesture: UIPanGestureRecognizer) {
-        let offsetX = gesture.translationInView(self.view).x
-        
-        
-        let MaxX = Common.screenWidth * rate
-        if currentDistance + offsetX >= MaxX {
-            centerView.frame = CGRectMake(MaxX, 0, Common.screenWidth, Common.screenHeight)
-            leftView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
-        } else if currentDistance + offsetX <= 0 {
-            centerView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
-            leftView.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
-        } else {
-            centerView.frame = CGRectMake(currentDistance + offsetX, 0,Common.screenWidth, Common.screenHeight)
-            leftView.frame = CGRectMake((currentDistance + offsetX) / rate - Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
-        }
+        let locationX =  gesture.locationInView(self.view).x
 
-        if gesture.state == .Ended || gesture.state == .Cancelled {
-            let x = centerView.frame.origin.x
-            let edge = (Common.screenWidth * rate) / 2
-            
-            var duration: NSTimeInterval = 0.5
-            if x >= edge {
-                duration = Double( (MaxX - x) * 2 / MaxX) * duration
-                animateToRight(true, duration: duration)
-            } else {
-                duration = Double( x * 2 / MaxX) * duration
-                animateToRight(false, duration: duration)
+        if gesture.state == .Began {
+            if locationX >= 50 && locationX <= Common.screenWidth * rate {
+                gestrueFinished = false
+                return
             }
+        }
+        
+        
+        let offsetX = gesture.translationInView(self.view).x
+        let MaxX = Common.screenWidth * rate
+
+        if gestrueFinished {
+            if currentDistance + offsetX >= MaxX {
+                centerView.frame = CGRectMake(MaxX, 0, Common.screenWidth, Common.screenHeight)
+                leftView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+            } else if currentDistance + offsetX <= 0 {
+                centerView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+                leftView.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
+            } else {
+                centerView.frame = CGRectMake(currentDistance + offsetX, 0,Common.screenWidth, Common.screenHeight)
+                leftView.frame = CGRectMake((currentDistance + offsetX) / rate - Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
+            }
+        }
+        
+        if gesture.state == .Ended || gesture.state == .Cancelled {
+            
+            if gestrueFinished == true {
+                let x = currentDistance + offsetX
+                let edge = (Common.screenWidth * rate) / 2
+                
+                var duration: NSTimeInterval = 0.5
+                if x >= edge {
+                    duration = Double( (MaxX - x) * 2 / MaxX) * duration
+                    animateToRight(true, duration: duration)
+                } else {
+                    duration = Double( x * 2 / MaxX) * duration
+                    animateToRight(false, duration: duration)
+                }
+            }
+            gestrueFinished = true
+            
         }
     }
 
