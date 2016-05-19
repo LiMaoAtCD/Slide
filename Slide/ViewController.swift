@@ -9,18 +9,16 @@
 import UIKit
 
 class ViewController: UIViewController,UIGestureRecognizerDelegate {
-
-    
     var leftViewController: LeftViewController!
     var centerViewController: CenterViewController!
     
-    
-    
-    
+    var leftView: UIView!
+    var centerView: UIView!
     
     var panGesture: UIPanGestureRecognizer!
     var rate: CGFloat = 0.8
     var currentDistance: CGFloat = 0.0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -31,53 +29,74 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
         self.addChildViewController(leftViewController)
         self.addChildViewController(centerViewController)
         
+        
+        //centerView
+        view.addSubview(centerViewController.view)
+        centerViewController.view.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+        centerView = centerViewController.view
+        centerView.backgroundColor = UIColor.greenColor()
+        
+        //leftView
         view.addSubview(leftViewController.view)
         leftViewController.view.backgroundColor = UIColor.redColor()
-        view.addSubview(centerViewController.view)
-        leftViewController.view.frame = self.view.bounds
+        leftViewController.view.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
+        leftView = leftViewController.view
+        leftView.backgroundColor = UIColor.redColor()
+       
         
-        centerViewController.view.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
-
         panGesture = UIPanGestureRecognizer.init(target: self, action: #selector(self.pan(_:)))
-
         self.view.addGestureRecognizer(panGesture)
+        self.view.backgroundColor = UIColor.whiteColor()
     }
     
     func pan(gesture: UIPanGestureRecognizer) {
         let offsetX = gesture.translationInView(self.view).x
-        if currentDistance + offsetX >= Common.screenWidth * rate {
-            centerViewController.view.frame = CGRectMake(Common.screenWidth * rate, 0, Common.screenWidth, Common.screenHeight)
+        
+        
+        let MaxX = Common.screenWidth * rate
+        if currentDistance + offsetX >= MaxX {
+            centerView.frame = CGRectMake(MaxX, 0, Common.screenWidth, Common.screenHeight)
+            leftView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
         } else if currentDistance + offsetX <= 0 {
-            centerViewController.view.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+            centerView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+            leftView.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
         } else {
-            centerViewController.view.frame = CGRectMake(currentDistance + offsetX, 0,Common.screenWidth, Common.screenHeight)
+            centerView.frame = CGRectMake(currentDistance + offsetX, 0,Common.screenWidth, Common.screenHeight)
+            leftView.frame = CGRectMake((currentDistance + offsetX) / rate - Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
         }
 
         if gesture.state == .Ended {
+            let x = centerView.frame.origin.x
+            let edge = (Common.screenWidth * rate) / 2
             
-            animateToRight(centerViewController.view.frame.origin.x >= (Common.screenWidth * rate) / 2 ? true : false)
-
+            var duration: NSTimeInterval = 0.5
+            if x >= edge {
+                duration = Double( (MaxX - x) * 2 / MaxX) * duration
+                animateToRight(true, duration: duration)
+            } else {
+                duration = Double( x * 2 / MaxX) * duration
+                animateToRight(false, duration: duration)
+            }
         }
-        
     }
 
-    func animateToRight(sure: Bool) {
-        
+    func animateToRight(sure: Bool, duration: NSTimeInterval) {
         if sure {
-            UIView.animateWithDuration(0.2, animations: {
-                self.centerViewController.view.frame = CGRectMake(Common.screenWidth * self.rate, 0, Common.screenWidth, Common.screenHeight)
+            UIView.animateWithDuration(duration, animations: {
+                self.centerView.frame = CGRectMake(Common.screenWidth * self.rate, 0, Common.screenWidth, Common.screenHeight)
+                self.leftView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
             }) { (finished) in
-                self.currentDistance = self.centerViewController.view.frame.origin.x
+                self.currentDistance = self.centerView.frame.origin.x
             }
         } else {
-            UIView.animateWithDuration(0.2, animations: {
-                self.centerViewController.view.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+            UIView.animateWithDuration(duration, animations: {
+                self.centerView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+                self.leftView.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
+
             }) { (finished) in
-                self.currentDistance = self.centerViewController.view.frame.origin.x
+                self.currentDistance = self.centerView.frame.origin.x
             }
         }
-
-      
     }
     
     override func didReceiveMemoryWarning() {
@@ -91,6 +110,5 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
 struct Common {
     static let screenWidth = UIScreen.mainScreen().bounds.size.width
     static let screenHeight = UIScreen.mainScreen().bounds.size.height
-    static let rootViewController = UIApplication.sharedApplication().keyWindow?.rootViewController as! ViewController
 }
 
