@@ -22,6 +22,9 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        let imageview = UIImageView.init(image: UIImage.init(named: "backGround")!)
+        imageview.frame = view.bounds
+        view.addSubview(imageview)
         
         leftViewController = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("LeftViewController") as! LeftViewController
         centerViewController = UIStoryboard.init(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("CenterViewController") as! CenterViewController
@@ -41,7 +44,7 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
         leftViewController.view.backgroundColor = UIColor.redColor()
         leftViewController.view.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
         leftView = leftViewController.view
-        leftView.backgroundColor = UIColor.redColor()
+        leftView.backgroundColor = UIColor.clearColor()
        
         
         panGesture = UIPanGestureRecognizer.init(target: self, action: #selector(self.pan(_:)))
@@ -65,7 +68,7 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
             leftView.frame = CGRectMake((currentDistance + offsetX) / rate - Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
         }
 
-        if gesture.state == .Ended {
+        if gesture.state == .Ended || gesture.state == .Cancelled {
             let x = centerView.frame.origin.x
             let edge = (Common.screenWidth * rate) / 2
             
