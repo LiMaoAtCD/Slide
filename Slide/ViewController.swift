@@ -53,22 +53,21 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
     }
     
     
-    var gestrueFinished: Bool = true
+    var gestureFinished: Bool = true
     func pan(gesture: UIPanGestureRecognizer) {
         let locationX =  gesture.locationInView(self.view).x
 
         if gesture.state == .Began {
             if locationX >= 50 && locationX <= Common.screenWidth * rate {
-                gestrueFinished = false
+                gestureFinished = false
                 return
             }
         }
         
-        
         let offsetX = gesture.translationInView(self.view).x
         let MaxX = Common.screenWidth * rate
 
-        if gestrueFinished {
+        if gestureFinished {
             if currentDistance + offsetX >= MaxX {
                 centerView.frame = CGRectMake(MaxX, 0, Common.screenWidth, Common.screenHeight)
                 leftView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
@@ -77,13 +76,15 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
                 leftView.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
             } else {
                 centerView.frame = CGRectMake(currentDistance + offsetX, 0,Common.screenWidth, Common.screenHeight)
+//                let transform3D = CATransform3DIdentity
+//                centerView.layer.transform = CATransform3DRotate(transform3D, CGFloat(M_PI_2) * (currentDistance + offsetX) / (currentDistance + offsetX), 0, 1, 0)
                 leftView.frame = CGRectMake((currentDistance + offsetX) / rate - Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
             }
         }
         
         if gesture.state == .Ended || gesture.state == .Cancelled {
             
-            if gestrueFinished == true {
+            if gestureFinished == true {
                 let x = currentDistance + offsetX
                 let edge = (Common.screenWidth * rate) / 2
                 
@@ -96,8 +97,7 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
                     animateToRight(false, duration: duration)
                 }
             }
-            gestrueFinished = true
-            
+            gestureFinished = true
         }
     }
 
