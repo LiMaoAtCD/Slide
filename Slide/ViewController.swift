@@ -18,6 +18,7 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
     var panGesture: UIPanGestureRecognizer!
     var rate: CGFloat = 0.8
     var currentDistance: CGFloat = 0.0
+    var transform: CATransform3D! = CATransform3DIdentity
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,41 +51,48 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
         panGesture = UIPanGestureRecognizer.init(target: self, action: #selector(self.pan(_:)))
         self.view.addGestureRecognizer(panGesture)
         self.view.backgroundColor = UIColor.whiteColor()
+        
+        transform.m34 = 1 / Common.screenWidth
+        self.centerView.layer.anchorPoint.x = 1
+        self.centerView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+
     }
     
     
     var gestureFinished: Bool = true
     func pan(gesture: UIPanGestureRecognizer) {
-        let locationX =  gesture.locationInView(self.view).x
-
-        if gesture.state == .Began {
-            if locationX >= 50 && locationX <= Common.screenWidth * rate {
-                gestureFinished = false
-                return
-            }
-        }
+        
+//        let locationX =  gesture.locationInView(self.view).x
+//        if gesture.state == .Began {
+//            if locationX >= 50 && locationX <= Common.screenWidth * rate {
+//                gestureFinished = false
+//                return
+//            }
+//        }
         
         let offsetX = gesture.translationInView(self.view).x
         let MaxX = Common.screenWidth * rate
 
-        if gestureFinished {
+//        if gestureFinished {
             if currentDistance + offsetX >= MaxX {
-                centerView.frame = CGRectMake(MaxX, 0, Common.screenWidth, Common.screenHeight)
+                centerView.layer.transform = CATransform3DRotate(transform, CGFloat( M_PI_4) , 0, 1, 0)
+
                 leftView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
             } else if currentDistance + offsetX <= 0 {
-                centerView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+                centerView.layer.transform = CATransform3DRotate(transform, CGFloat( M_PI_4) * 0 , 0, 1, 0)
+
                 leftView.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
             } else {
-                centerView.frame = CGRectMake(currentDistance + offsetX, 0,Common.screenWidth, Common.screenHeight)
-//                let transform3D = CATransform3DIdentity
-//                centerView.layer.transform = CATransform3DRotate(transform3D, CGFloat(M_PI_2) * (currentDistance + offsetX) / (currentDistance + offsetX), 0, 1, 0)
+                let x = (currentDistance + offsetX) / MaxX
+                centerView.layer.transform = CATransform3DRotate(transform, CGFloat( M_PI_4) * x , 0, 1, 0)
+                
                 leftView.frame = CGRectMake((currentDistance + offsetX) / rate - Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
             }
-        }
+//        }
         
         if gesture.state == .Ended || gesture.state == .Cancelled {
             
-            if gestureFinished == true {
+//            if gestureFinished == true {
                 let x = currentDistance + offsetX
                 let edge = (Common.screenWidth * rate) / 2
                 
@@ -96,26 +104,26 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
                     duration = Double( x * 2 / MaxX) * duration
                     animateToRight(false, duration: duration)
                 }
-            }
-            gestureFinished = true
+//            }
+//            gestureFinished = true
         }
     }
 
     func animateToRight(sure: Bool, duration: NSTimeInterval) {
         if sure {
             UIView.animateWithDuration(duration, animations: {
-                self.centerView.frame = CGRectMake(Common.screenWidth * self.rate, 0, Common.screenWidth, Common.screenHeight)
+                
+                self.centerView.layer.transform = CATransform3DRotate(self.transform, CGFloat(M_PI_4), 0, 1, 0)
                 self.leftView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
             }) { (finished) in
-                self.currentDistance = self.centerView.frame.origin.x
+                self.currentDistance = Common.screenWidth * CGFloat(self.rate)
             }
         } else {
             UIView.animateWithDuration(duration, animations: {
-                self.centerView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+                self.centerView.layer.transform = self.transform
                 self.leftView.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
-
             }) { (finished) in
-                self.currentDistance = self.centerView.frame.origin.x
+                self.currentDistance = 0
             }
         }
     }
