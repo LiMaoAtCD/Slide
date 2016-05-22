@@ -75,16 +75,20 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
 
 //        if gestureFinished {
             if currentDistance + offsetX >= MaxX {
-                centerView.layer.transform = CATransform3DRotate(transform, CGFloat( M_PI_4) , 0, 1, 0)
-
+                
+                let rotateTransform = CATransform3DRotate(transform, CGFloat( M_PI_4) * 0.5 , 0, 1, 0)
+                let translateTransform = CATransform3DTranslate(transform, 100, 0, 0)
+                centerView.layer.transform = CATransform3DConcat(rotateTransform, translateTransform)
                 leftView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
+                
             } else if currentDistance + offsetX <= 0 {
-                centerView.layer.transform = CATransform3DRotate(transform, CGFloat( M_PI_4) * 0 , 0, 1, 0)
-
+                centerView.layer.transform = transform
                 leftView.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
             } else {
                 let x = (currentDistance + offsetX) / MaxX
-                centerView.layer.transform = CATransform3DRotate(transform, CGFloat( M_PI_4) * x , 0, 1, 0)
+                let rotateTransform = CATransform3DRotate(transform, CGFloat( M_PI_4) * 0.5 * x , 0, 1, 0)
+                let translateTransform = CATransform3DTranslate(transform, 100 * x, 0, 0)
+                centerView.layer.transform = CATransform3DConcat(rotateTransform, translateTransform)
                 
                 leftView.frame = CGRectMake((currentDistance + offsetX) / rate - Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
             }
@@ -113,7 +117,9 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
         if sure {
             UIView.animateWithDuration(duration, animations: {
                 
-                self.centerView.layer.transform = CATransform3DRotate(self.transform, CGFloat(M_PI_4), 0, 1, 0)
+                let rotateTransform = CATransform3DRotate(self.transform, CGFloat(M_PI_4) * 0.5 , 0, 1, 0)
+                let translateTransform = CATransform3DTranslate(self.transform, 100, 0, 0)
+                self.centerView.layer.transform = CATransform3DConcat(rotateTransform, translateTransform)
                 self.leftView.frame = CGRectMake(0, 0, Common.screenWidth, Common.screenHeight)
             }) { (finished) in
                 self.currentDistance = Common.screenWidth * CGFloat(self.rate)
@@ -122,6 +128,7 @@ class ViewController: UIViewController,UIGestureRecognizerDelegate {
             UIView.animateWithDuration(duration, animations: {
                 self.centerView.layer.transform = self.transform
                 self.leftView.frame = CGRectMake(-Common.screenWidth, 0, Common.screenWidth, Common.screenHeight)
+                
             }) { (finished) in
                 self.currentDistance = 0
             }
